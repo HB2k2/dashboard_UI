@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:ticket_system/constants.dart';
+import 'package:ticket_system/responsive.dart';
+import 'package:ticket_system/controllers/menu_controller.dart' as mc;
 
 class Header extends StatelessWidget {
   const Header({
@@ -11,11 +14,20 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          "DashBoard",
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        const Spacer(flex: 2,),
+        if (!Responsive.isDesktop(context))
+          IconButton(
+            onPressed: context.read<mc.MenuController>().controlMenu,
+            icon: const Icon(Icons.menu),
+          ),
+        if (!Responsive.isMobile(context))
+          Text(
+            "DashBoard",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+        if (!Responsive.isMobile(context))
+          Spacer(
+            flex: Responsive.isDesktop(context) ? 2 : 1,
+          ),
         const Expanded(child: SearchField()),
         const ProfileCard(),
       ],
@@ -44,10 +56,11 @@ class ProfileCard extends StatelessWidget {
             "images/profile_pic.png",
             height: 38,
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-            child: Text("Angelina Joli"),
-          ),
+          if (!Responsive.isMobile(context))
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+              child: Text("Angelina Joli"),
+            ),
           const Icon(Icons.keyboard_arrow_down),
         ],
       ),
@@ -83,7 +96,8 @@ class SearchField extends StatelessWidget {
                   Radius.circular(10),
                 ),
               ),
-              margin: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
               child: SvgPicture.asset("icons/Search.svg"),
               // margin: ,
             ),

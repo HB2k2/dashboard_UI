@@ -81,7 +81,7 @@ class DrawerListTile extends StatelessWidget {
         color: Colors.white54,
         height: 16,
       ),
-      title: Text(title, style: TextStyle(color: Colors.white54)),
+      title: Text(title, style: const TextStyle(color: Colors.white54)),
     );
   }
 }

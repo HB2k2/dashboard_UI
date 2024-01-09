@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ticket_system/constants.dart';
 import 'package:ticket_system/models/MyFiles.dart';
+import 'package:ticket_system/responsive.dart';
 import 'package:ticket_system/screens/components/file_info_chart.dart';
 
 class MyFiles extends StatelessWidget {
@@ -10,6 +11,7 @@ class MyFiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Column(
       children: [
         Row(
@@ -21,9 +23,10 @@ class MyFiles extends StatelessWidget {
             ),
             ElevatedButton.icon(
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: defaultPadding * 1.5,
-                  vertical: defaultPadding,
+                  vertical:
+                      defaultPadding / (Responsive.isMobile(context) ? 2 : 1),
                 ),
               ),
               onPressed: () {},
@@ -33,15 +36,14 @@ class MyFiles extends StatelessWidget {
           ],
         ),
         const SizedBox(height: defaultPadding),
-        GridView.builder(
-          shrinkWrap: true,
-          itemCount: demoMyFiles.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: defaultPadding,
-              childAspectRatio: 1.4),
-          itemBuilder: (context, index) => FileInfoCard(
-            info: demoMyFiles[index],
+        Responsive(
+          mobile: FileInfoCardFridView(
+            crossAxisCount: size.width < 650 ? 2 : 4,
+            childAspectRatio: size.width < 650 ? 1.3 : 1,
+          ),
+          tablet: const FileInfoCardFridView(),
+          desktop: FileInfoCardFridView(
+            childAspectRatio: size.width < 1400 ? 1.1 : 1.4,
           ),
         ),
       ],
@@ -49,4 +51,31 @@ class MyFiles extends StatelessWidget {
   }
 }
 
+class FileInfoCardFridView extends StatelessWidget {
+  const FileInfoCardFridView({
+    super.key,
+    this.crossAxisCount = 4,
+    this.childAspectRatio = 1.4,
+  });
 
+  final int crossAxisCount;
+  final double childAspectRatio;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: demoMyFiles.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: defaultPadding,
+        mainAxisSpacing: defaultPadding,
+        childAspectRatio: childAspectRatio,
+      ),
+      itemBuilder: (context, index) => FileInfoCard(
+        info: demoMyFiles[index],
+      ),
+    );
+  }
+}

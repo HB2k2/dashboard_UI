@@ -35,7 +35,7 @@ class Chart extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           height: 0.5),
                 ),
-                Text("of 128 GB")
+                const Text("of 128 GB")
               ],
             ),
           ),
